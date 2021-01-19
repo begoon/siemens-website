@@ -22,43 +22,63 @@ const request = (url, complete, always, failed) => {
     });
 }
 
-const TableRow = (args) => {
+const VariableRow = (args) => {
   return (
     <tr>
-      <td>{args.variable}</td>
+      <td>{args.name}</td>
       <td>
-        <input value={args.value} onChange={args.updateVariable} />
+        <input value={args.value} onChange={args.update} />
       </td>
       <td>
-        {
-          args.updating ?
-            <FontAwesomeIcon icon={faSyncAlt} className="fa-spin" /> :
-            <FontAwesomeIcon icon={faSave} onClick={args.saveVariable} />
-        }
+        <button>
+          {
+            args.updating ?
+              <FontAwesomeIcon icon={faSyncAlt} className="fa-spin" /> :
+              <FontAwesomeIcon icon={faSave} onClick={args.save} />
+          }
+        </button>
       </td>
       <td>
-        <FontAwesomeIcon icon={faTrashAlt} />
+        <button>
+          <FontAwesomeIcon icon={faTrashAlt} />
+        </button>
       </td>
     </tr>
   );
 }
 
-const MainTable = (args) => {
+const Controllers = (args) => {
   const [updatingVariable, setUpdatingVariable] = useState(null);
   const [variables, setVariables] = useState({ ...args.variables });
 
-  const saveVariable = (id) => {
+  const saveVariable = (variableId, variableName, variableValue) => {
     if (updatingVariable !== null) return;
-    setUpdatingVariable(id);
+    setUpdatingVariable(variableId);
     request("controller", null, () => setUpdatingVariable(null));
   };
 
-  const updateVariable = (controller, variable, event) => {
-    console.log(`${controller} ${variable} ${event.target.value}`);
+  const updateVariable = (variableName, event) => {
+    console.log(`${args.controller} ${variableName} ${event.target.value}`);
     let updatedVariables = { ...variables };
-    updatedVariables[variable] = event.target.value;
+    updatedVariables[variableName] = event.target.value;
     setVariables(updatedVariables);
   };
+
+  const variableRow = (name) => {
+    const id = `${args.controller}-${name}`;
+    const value = variables[name];
+    return (
+      <VariableRow
+        key={id}
+        name={name}
+        value={value}
+        updating={updatingVariable === id}
+        save={() => saveVariable(id, name, value)}
+        update={(event) => updateVariable(name, event)}
+      />
+    );
+  }
+
   return (
     <>
       <h1>{args.controller}</h1>
@@ -67,30 +87,14 @@ const MainTable = (args) => {
           <tr key="a">
             <td>Variable</td>
             <td>Value</td>
-            <td></td>
-            <td></td>
+            <td>Save</td>
+            <td>Delete</td>
           </tr>
         </thead>
         <tbody>
           {
-            Object.keys(variables).map(
-              (variable) => <TableRow
-                key={args.controller + '-' + variable}
-                id={args.controller + '-' + variable}
-                variable={variable}
-                value={variables[variable]}
-                updating={updatingVariable === variable}
-                saveVariable={
-                  () => saveVariable(
-                    args.controller + '-' + variable
-                  )}
-                updateVariable={
-                  (event) => updateVariable(
-                    args.controller, variable, event,
-                  )
-                }
-              />
-            )}
+            Object.keys(variables).map((variable) => variableRow(variable))
+          }
         </tbody>
       </table>
     </>
@@ -125,7 +129,7 @@ const App = () => {
       <div className={classes.App}>
         {
           Object.keys(controllers).map(
-            (controller) => <MainTable
+            (controller) => <Controllers
               key={controller}
               controller={controller}
               variables={controllers[controller]}
