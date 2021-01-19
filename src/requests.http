@@ -3,3 +3,11 @@
 ###
 
 GET {{host}}/controller
+
+###
+
+GET {{host}}/controller/one/variable/set?z=x
+
+###
+
+GET https://siemens-controller.herokuapp.com/controller/one/variable/delete?

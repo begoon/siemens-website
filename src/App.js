@@ -9,7 +9,6 @@ const host = "https://siemens-controller.herokuapp.com";
 
 const request = (url, complete, always, failed) => {
   const path = host + "/" + url;
-  console.log('> request: ' + path);
   $.get(path,
     (response) => {
       if (complete) complete(response);
@@ -40,8 +39,32 @@ const VariableRow = (args) => {
       </td>
       <td>
         <button>
-          <FontAwesomeIcon icon={faTrashAlt} />
+          <FontAwesomeIcon icon={faTrashAlt} onClick={args.delete} />
         </button>
+      </td>
+    </tr>
+  );
+}
+
+const NewVariableRow = (args) => {
+  return (
+    <tr>
+      <td>
+        <input value={args.name} onChange={args.updateName} placeholder="new name" />
+      </td>
+      <td>
+        <input value={args.value} onChange={args.updateValue} placeholder="value" />
+      </td>
+      <td>
+        <button>
+          {
+            args.updating ?
+              <FontAwesomeIcon icon={faSyncAlt} className="fa-spin" /> :
+              <FontAwesomeIcon icon={faSave} onClick={args.save} />
+          }
+        </button>
+      </td>
+      <td>
       </td>
     </tr>
   );
@@ -50,21 +73,49 @@ const VariableRow = (args) => {
 const Controllers = (args) => {
   const [updatingVariable, setUpdatingVariable] = useState(null);
   const [variables, setVariables] = useState({ ...args.variables });
-
-  const saveVariable = (variableId, variableName, variableValue) => {
-    if (updatingVariable !== null) return;
-    setUpdatingVariable(variableId);
-    request("controller", null, () => setUpdatingVariable(null));
-  };
+  const [newVariable, setNewVariable] = useState({ name: '', value: '' });
 
   const updateVariable = (variableName, event) => {
-    console.log(`${args.controller} ${variableName} ${event.target.value}`);
     let updatedVariables = { ...variables };
     updatedVariables[variableName] = event.target.value;
     setVariables(updatedVariables);
   };
 
+  const updateNewVariable = (event, field) => {
+    const updatedNewVariable = { ...newVariable };
+    updatedNewVariable[field] = event.target.value;
+    setNewVariable(updatedNewVariable);
+  }
+
+  const saveVariable = (id, name, value, isNew) => {
+    if (updatingVariable || !name) return;
+    setUpdatingVariable(id);
+    const path = `controller/${args.controller}/variable/set?${name}=${value}`
+    request(path, () => {
+      const updatedVariables = { ...variables };
+      updatedVariables[name] = value;
+      setVariables(updatedVariables);
+      if (isNew) setNewVariable({ name: '', value: '' });
+    }, () => {
+      setUpdatingVariable(null);
+    });
+  };
+
+  const deleteVariable = (id, name) => {
+    if (updatingVariable) return;
+    setUpdatingVariable(id);
+    const path = `controller/${args.controller}/variable/delete?${name}`
+    request(path, () => {
+      const updatedVariables = { ...variables };
+      delete updatedVariables[name];
+      setVariables(updatedVariables);
+    }, () => {
+      setUpdatingVariable(null);
+    });
+  };
+
   const variableRow = (name) => {
+    if (!name) return;
     const id = `${args.controller}-${name}`;
     const value = variables[name];
     return (
@@ -73,8 +124,26 @@ const Controllers = (args) => {
         name={name}
         value={value}
         updating={updatingVariable === id}
-        save={() => saveVariable(id, name, value)}
         update={(event) => updateVariable(name, event)}
+        save={() => saveVariable(id, name, value)}
+        delete={(event) => deleteVariable(id, name, event)}
+      />
+    );
+  }
+
+  const newVariableRow = (controller, newVariable) => {
+    const id = `${controller}@new_variable`;
+    const name = newVariable.name;
+    const value = newVariable.value;
+    return (
+      <NewVariableRow
+        key={id}
+        name={name}
+        value={value}
+        updating={updatingVariable === id}
+        save={() => saveVariable(id, name, value, true)}
+        updateName={(event) => updateNewVariable(event, 'name')}
+        updateValue={(event) => updateNewVariable(event, 'value')}
       />
     );
   }
@@ -94,6 +163,9 @@ const Controllers = (args) => {
         <tbody>
           {
             Object.keys(variables).map((variable) => variableRow(variable))
+          }
+          {
+            newVariableRow(args.controller, newVariable)
           }
         </tbody>
       </table>
