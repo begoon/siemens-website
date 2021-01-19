@@ -1,0 +1,72 @@
+<style>
+    .updated-inactive:after {
+        content: "UPDATED";
+        opacity: 0;
+        transition: all 250ms;
+        color: red
+    }
+
+    .updated-active:after {
+        opacity: 1;
+        transition: all 3s;
+    }
+
+    .variable-spinner {
+        visibility: hidden;
+    }
+
+    .variable-spinner-visible {
+        visibility: visible;
+    }
+
+    .flash:after {
+        content: 'UPDATED';
+        animation: flash 3s ease-out;
+        animation-iteration-count: 1;
+    }
+
+    @keyframes flash {
+        0% {
+            opacity: 0;
+            background-color: transparent;
+        }
+
+        50% {
+            opacity: 1;
+            background-color: #fbf8b2;
+        }
+
+        100% {
+            opacity: 0;
+            background-color: transparent;
+        }
+    }
+
+</style>
+<script src="https://kit.fontawesome.com/a8f9423348.js" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script>
+    const sync = () => {
+        const variable = $("#variable-abc-spinner");
+        variable.toggleClass("variable-spinner-visible");
+    }
+    const update_1 = () => {
+        const variable = $("#variable-abc");
+        variable.toggleClass("flash");
+    }
+    const update_2 = () => {
+        const variable = $("#variable-abc");
+        variable.toggleClass("updated-active");
+    }
+</script>
+<div>
+    <div id="variable-abc" class="updated-inactive">
+        variable-name
+        <i class="fas fa-sync fa-spin variable-spinner" id="variable-abc-spinner"></i>
+    </div>
+    <div>
+        <button onclick="sync()">sync</button>
+        <button onclick="update_1()">update 1</button>
+        <button onclick="update_2()">update 2</button>
+    </div>
+</div>

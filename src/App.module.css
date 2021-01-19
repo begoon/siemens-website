@@ -1,0 +1,16 @@
+.App {
+  text-align: center;
+}
+
+.App .ButtonIcon {
+  background-color: cyan;
+}
+
+.App .ButtonIcon:hover {
+  cursor: pointer;
+  background-color: red;
+}
+
+.App .Updating {
+  background-color: saddlebrown;
+}

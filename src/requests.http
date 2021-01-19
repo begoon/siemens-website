@@ -1,0 +1,5 @@
+@host = https://siemens-controller.herokuapp.com
+
+###
+
+GET {{host}}/controller

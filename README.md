@@ -1,7 +1,15 @@
-npx create-react-app ui-experiments
-cd ui-experiments
-npm init
+- npx create-react-app ui-experiments
+- cd ui-experiments
 
+- npm init
+
+- npm install purecss --save
+  
+- npm install --save @fortawesome/fontawesome-svg-core
+- npm install --save @fortawesome/free-solid-svg-icons
+- npm install --save @fortawesome/react-fontawesome
+
+- npm install --save jquery
 
 # Getting Started with Create React App
 
