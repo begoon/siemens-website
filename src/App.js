@@ -1,25 +1,8 @@
 import classes from './App.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faTrashAlt, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
-import $ from 'jquery';
 import { useState, useEffect } from 'react';
-
-// const host = "http://127.0.0.1:5000";
-const host = "https://siemens-controller.herokuapp.com";
-
-const request = (url, complete, always, failed) => {
-  const path = host + "/" + url;
-  $.get(path,
-    (response) => {
-      if (complete) complete(response);
-    })
-    .always(() => {
-      if (always) always();
-    })
-    .fail(() => {
-      if (failed) failed(path);
-    });
-}
+import * as api from './services/Controllers';
 
 const VariableRow = (args) => {
   return (
@@ -74,6 +57,7 @@ const Controllers = (args) => {
   const [updatingVariable, setUpdatingVariable] = useState(null);
   const [variables, setVariables] = useState({ ...args.variables });
   const [newVariable, setNewVariable] = useState({ name: '', value: '' });
+  const controller = args.controller;
 
   const updateVariable = (variableName, event) => {
     let updatedVariables = { ...variables };
@@ -90,8 +74,7 @@ const Controllers = (args) => {
   const saveVariable = (id, name, value, isNew) => {
     if (updatingVariable || !name) return;
     setUpdatingVariable(id);
-    const path = `controller/${args.controller}/variable/set?${name}=${value}`
-    request(path, () => {
+    api.saveVariable(controller, name, value, () => {
       const updatedVariables = { ...variables };
       updatedVariables[name] = value;
       setVariables(updatedVariables);
@@ -104,8 +87,7 @@ const Controllers = (args) => {
   const deleteVariable = (id, name) => {
     if (updatingVariable) return;
     setUpdatingVariable(id);
-    const path = `controller/${args.controller}/variable/delete?${name}`
-    request(path, () => {
+    api.deleteVariable(controller, name, () => {
       const updatedVariables = { ...variables };
       delete updatedVariables[name];
       setVariables(updatedVariables);
@@ -114,9 +96,9 @@ const Controllers = (args) => {
     });
   };
 
-  const variableRow = (name) => {
+  const buildVariableRow = (name) => {
     if (!name) return;
-    const id = `${args.controller}-${name}`;
+    const id = `${controller}-${name}`;
     const value = variables[name];
     return (
       <VariableRow
@@ -131,7 +113,7 @@ const Controllers = (args) => {
     );
   }
 
-  const newVariableRow = (controller, newVariable) => {
+  const buildNewVariableRow = () => {
     const id = `${controller}@new_variable`;
     const name = newVariable.name;
     const value = newVariable.value;
@@ -162,10 +144,10 @@ const Controllers = (args) => {
         </thead>
         <tbody>
           {
-            Object.keys(variables).map((variable) => variableRow(variable))
+            Object.keys(variables).map((variable) => buildVariableRow(variable))
           }
           {
-            newVariableRow(args.controller, newVariable)
+            buildNewVariableRow()
           }
         </tbody>
       </table>
@@ -179,15 +161,13 @@ const App = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (Object.keys(controllers).length !== 0) return;
-    if (loading) return;
+    if (Object.keys(controllers).length || loading) return;
     setLoading(true);
-    request('controller', (response) => {
-      console.log(response);
+    api.loadControllers((response) => {
       setControllers(response);
       setError('');
-      setLoading(false);
     }, () => {
+      setLoading(false);
     }, (path) => {
       setError(`Unable to load controllers from ${path}. Re-try in 5 seconds...`);
       setTimeout(() => setLoading(false), 5000);
