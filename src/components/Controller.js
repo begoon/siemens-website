@@ -3,7 +3,7 @@ import { faSyncAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 
 import classes from './Controller.module.css';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as api from '../services/Controllers';
 import { VariableRow, NewVariableRow } from './Variable';
 
@@ -12,6 +12,15 @@ const Controller = (args) => {
 
   const [variables, setVariables] = useState({ ...args.variables });
   const [newVariable, setNewVariable] = useState({ name: '', value: '' });
+
+  const [deleted, setDeleted] = useState(false);
+
+  useEffect(() => {
+    if (deleted) {
+      args.delete(controller);
+    }
+  });
+
   const controller = args.controller;
 
   const updateVariable = (variableName, event) => {
@@ -55,7 +64,7 @@ const Controller = (args) => {
     if (processing) return;
     setProcessing('@');
     api.deleteController(controller, () => {
-      args.delete(controller);
+      setDeleted(controller);
     }, () => {
       setProcessing(false);
     });
