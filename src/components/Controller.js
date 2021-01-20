@@ -1,15 +1,21 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSyncAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+
+import classes from './Controller.module.css';
+
 import { useState } from 'react';
 import * as api from '../services/Controllers';
 import { VariableRow, NewVariableRow } from './Variable';
 
-const Controllers = (args) => {
-  const [updatingVariable, setUpdatingVariable] = useState(null);
+const Controller = (args) => {
+  const [processing, setProcessing] = useState(false);
+
   const [variables, setVariables] = useState({ ...args.variables });
   const [newVariable, setNewVariable] = useState({ name: '', value: '' });
   const controller = args.controller;
 
   const updateVariable = (variableName, event) => {
-    let updatedVariables = { ...variables };
+    const updatedVariables = { ...variables };
     updatedVariables[variableName] = event.target.value;
     setVariables(updatedVariables);
   };
@@ -21,27 +27,37 @@ const Controllers = (args) => {
   }
 
   const saveVariable = (id, name, value, isNew) => {
-    if (updatingVariable || !name) return;
-    setUpdatingVariable(id);
+    if (processing || !name) return;
+    setProcessing(id);
     api.saveVariable(controller, name, value, () => {
       const updatedVariables = { ...variables };
       updatedVariables[name] = value;
       setVariables(updatedVariables);
       if (isNew) setNewVariable({ name: '', value: '' });
     }, () => {
-      setUpdatingVariable(null);
+      setProcessing(false);
     });
   };
 
   const deleteVariable = (id, name) => {
-    if (updatingVariable) return;
-    setUpdatingVariable(id);
+    if (processing) return;
+    setProcessing(id);
     api.deleteVariable(controller, name, () => {
       const updatedVariables = { ...variables };
       delete updatedVariables[name];
       setVariables(updatedVariables);
     }, () => {
-      setUpdatingVariable(null);
+      setProcessing(false);
+    });
+  };
+
+  const deleteController = () => {
+    if (processing) return;
+    setProcessing('@');
+    api.deleteController(controller, () => {
+      args.delete(controller);
+    }, () => {
+      setProcessing(false);
     });
   };
 
@@ -54,7 +70,7 @@ const Controllers = (args) => {
         key={id}
         name={name}
         value={value}
-        updating={updatingVariable === id}
+        updating={processing === id}
         update={(event) => updateVariable(name, event)}
         save={() => saveVariable(id, name, value)}
         delete={(event) => deleteVariable(id, name, event)}
@@ -71,7 +87,7 @@ const Controllers = (args) => {
         key={id}
         name={name}
         value={value}
-        updating={updatingVariable === id}
+        updating={processing === id}
         save={() => saveVariable(id, name, value, true)}
         updateName={(event) => updateNewVariable(event, 'name')}
         updateValue={(event) => updateNewVariable(event, 'value')}
@@ -80,8 +96,19 @@ const Controllers = (args) => {
   }
 
   return (
-    <>
-      <h1>{controller}</h1>
+    <div className={classes.Controller}>
+      <div className={classes.Title}>
+        <span className={classes.Name}>{controller}</span>
+        {
+          processing === `@` ?
+            <FontAwesomeIcon
+              icon={faSyncAlt} className="fa-spin" size="xs" /> :
+            <FontAwesomeIcon
+              icon={faTrashAlt} size="xs"
+              onClick={deleteController}
+            />
+        }
+      </div>
       <table className="pure-table">
         <thead>
           <tr>
@@ -100,8 +127,8 @@ const Controllers = (args) => {
           }
         </tbody>
       </table>
-    </>
+    </div>
   );
 }
 
-export default Controllers;
+export default Controller;

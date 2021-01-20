@@ -17,19 +17,25 @@ const request = (url, complete, always, failed) => {
     });
 }
 
-const saveVariable = (controller, name, value, complete, always, failed) => {
+export const saveVariable = (controller, name, value, complete, always, failed) => {
   if (!name) return;
   const path = `controller/${controller}/variable/set?${name}=${value}`
   request(path, complete, always, failed);
 }
 
-const deleteVariable = (controller, name, complete, always, failed) => {
+export const deleteVariable = (controller, name, complete, always, failed) => {
   const path = `controller/${controller}/variable/delete?${name}`
   request(path, complete, always, failed);
 }
 
-const loadControllers = (complete, always, failed) => {
-  request(`controller`, complete, always, failed);
+export const createController = (name, complete, always, failed) => {
+  request(`controller/${name}/create`, complete, always, failed);
 }
 
-export { saveVariable, deleteVariable, loadControllers };
+export const deleteController = (name, complete, always, failed) => {
+  request(`controller/${name}/delete`, complete, always, failed);
+}
+
+export const loadControllers = (complete, always, failed) => {
+  request(`controller`, complete, always, failed);
+}

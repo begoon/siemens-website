@@ -1,7 +1,8 @@
 import classes from './App.module.css';
 import { useState, useEffect } from 'react';
 import * as api from './services/Controllers';
-import Controllers from './components/Controller';
+import Controller from './components/Controller';
+import NewController from './components/NewController'
 
 const App = () => {
   const [controllers, setControllers] = useState({});
@@ -22,6 +23,18 @@ const App = () => {
     });
   }, [controllers, loading, error]);
 
+  const createController = (name) => {
+    const updatedControllers = { ...controllers };
+    updatedControllers[name] = {};
+    setControllers(updatedControllers);
+  }
+
+  const deleteController = (name) => {
+    const updatedControllers = { ...controllers };
+    delete updatedControllers[name];
+    setControllers(updatedControllers);
+  }
+
   return (
     <>
       {error ? <p>{error}</p> : ''}
@@ -29,14 +42,16 @@ const App = () => {
       <div className={classes.App}>
         {
           Object.keys(controllers).map(
-            (controller) => <Controllers
+            (controller) => <Controller
               key={controller}
               controller={controller}
               variables={controllers[controller]}
+              delete={deleteController}
             />
           )
         }
       </div>
+      <NewController create={createController} />
     </>
   );
 }

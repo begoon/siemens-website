@@ -1,0 +1,9 @@
+.Controller .Title {
+    font-size: 1.2em;
+    margin: 10px auto;
+}
+
+.Controller .Name {
+    font-size: 1.2em;
+    padding-right: 10px;
+}
