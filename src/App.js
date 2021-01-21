@@ -57,8 +57,8 @@ const App = () => {
             />
           )
         }
+        <NewController create={createController} />
       </div>
-      <NewController create={createController} />
     </>
   );
 }
