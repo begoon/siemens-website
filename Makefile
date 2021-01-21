@@ -14,3 +14,5 @@ run:
 release:
 	-rm -rf ./docs
 	cp -R ./build ./docs
+
+publish: build release
