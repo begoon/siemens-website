@@ -24,6 +24,10 @@ const App = () => {
     });
   }, [controllers, loading, error]);
 
+  const refresh = () => {
+    setControllers({});
+  }
+
   const createController = (name) => {
     const updatedControllers = { ...controllers };
     updatedControllers[name] = {};
@@ -40,6 +44,8 @@ const App = () => {
     <>
       {error ? <p>{error}</p> : ''}
       {loading ? <p>Loading...</p> : ''}
+      <button onClick={refresh}>Refresh</button>
+      <h1>Controllers</h1>
       <div className={classes.App}>
         {
           Object.keys(controllers).map(
