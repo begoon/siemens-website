@@ -1,0 +1,94 @@
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="js/RadialBar.js"></script>
+    <script language="javascript">
+        const get_controllers = (callback) => {
+            console.log(`> get controllers`);
+            request(`controller`, (response) => {
+                callback(response);
+            });
+        }
+        const set_loading_indicator_visibility = (visible) => {
+            $('#loading-indicator').css('visibility', visible ? 'visible' : 'hidden');
+        };
+        const request = (url, callback) => {
+            const host = "https://siemens-controller.herokuapp.com"
+            const path = host + "/" + url;
+            console.log('> request: ' + path);
+            set_loading_indicator_visibility(true);
+            const query = $.get(path, function () {
+                console.log('> query started');
+            })
+                .done(function (response) {
+                    console.log(`> query done`);
+                    callback(response);
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    alert(`! Unable to call [${path}]`);
+                })
+                .always(() => set_loading_indicator_visibility(false));
+        }
+
+        function draw_level(n, color, level) {
+            const canvas = document.getElementById("levels");
+            const context = canvas.getContext("2d");
+            context.fillStyle = '#fff';
+            context.fillRect(100 * n, 0, 90, 100);
+            context.fillStyle = color;
+            context.fillRect(100 * n, 100 - level, 90, level + 0);
+        }
+
+        function draw_percentage(n, color, level) {
+            const context = document.getElementById('indicators').getContext('2d');;
+            const progressBarOne = new RadialBar(context, {
+                x: 45 + n * 100,
+                y: 45,
+                radius: 43,
+                lineWidth: 3,
+                lineFill: 'grey',
+                backLineFill: 'lightgrey',
+                bgFill: 'white',
+                progress: level,
+                isShowInfoText: true,
+                infoStyle: '20px Tahoma',
+                infoColor: color,
+            });
+            progressBarOne.update();
+        }
+
+        function update_levels() {
+            get_controllers((controllers) => {
+                let i = 0;
+                for (let [controller, variables] of Object.entries(controllers)) {
+                    draw_level(i, variables.color, 0 + variables.level);
+                    draw_percentage(i, variables.color, 0 + variables.level);
+                    i += 1;
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            console.log('> page is loaded');
+            update_levels();
+            setInterval(update_levels, 5000);
+        });
+    </script>
+    <style>
+        #loading-indicator {
+            color: #fff;
+            background-color: #cc0000;
+            visibility: hidden;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div><canvas id="levels" width="300" height="100"></canvas></div>
+    <p><span id="loading-indicator">Loading...</span></p>
+    <div><canvas id="indicators" width="300" height="100"></canvas></div>
+</body>
+
+</html>
