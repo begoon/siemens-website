@@ -46,6 +46,9 @@ const App = () => {
       {error ? <p>{error}</p> : ''}
       {loading ? <p>Loading...</p> : ''}
       <button onClick={refresh}>Refresh</button>
+      <a href="demo/" target="_blank" style={{ marginLeft: '10px' }}>
+        Demo application
+      </a>
       <h1>Controllers</h1>
       <div className={classes.App}>
         {
