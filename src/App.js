@@ -15,10 +15,11 @@ const App = () => {
     api.loadControllers((response) => {
       setControllers(response);
       setError('');
-    }, () => {
       setLoading(false);
-    }, (path) => {
-      setError(`Unable to load controllers from ${path}. Re-try in 5 seconds...`);
+    }, () => {
+    }, (error) => {
+      setError(`${error.error}. Re-try in 5 seconds...`);
+      setError(`${error.error}. Re-try in 5 seconds...`);
       setTimeout(() => setLoading(false), 5000);
     });
   }, [controllers, loading, error]);

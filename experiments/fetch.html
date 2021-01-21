@@ -1,0 +1,46 @@
+<html>
+
+<head>
+    <script>
+        const host = "https://siemens-controller.herokuapp.com";
+
+        const request = (url, complete, always, failed) => {
+            const path = host + "/" + url;
+            console.log(path)
+            const response = fetch(path, {
+                method: 'GET',
+                cache: 'no-cache',
+            })
+                .then(response => {
+                    if (always) always();
+                    response.json().then(json => {
+                        if (response.ok) {
+                            complete(json);
+                        } else {
+                            failed({
+                                error: `server error ${response.status} calling ${path}`,
+                                status: response.status,
+                                body: json,
+                            })
+                        }
+                    });
+                })
+                .catch(error => {
+                    if (always) always();
+                    failed({
+                        error: `failed to fetch from ${path}`
+                    });
+                });
+        }
+
+        request("controller/onex", (response) => {
+            console.log('complete:', response);
+        }, () => {
+            console.log('always');
+        }, (error) => {
+            console.log(`failed: ${JSON.stringify(error, null, 4)}`);
+        });
+    </script>
+</head>
+
+</html>
