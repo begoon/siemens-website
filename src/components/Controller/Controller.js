@@ -4,8 +4,8 @@ import { faSyncAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import classes from './Controller.module.css';
 
 import { useEffect, useState } from 'react';
-import * as api from '../services/Controllers';
-import { VariableRow, NewVariableRow } from './Variable';
+import * as api from '../../services/Controllers';
+import { VariableRow, NewVariableRow } from '../Variable/Variable';
 
 const Controller = (args) => {
   const [processing, setProcessing] = useState(false);
