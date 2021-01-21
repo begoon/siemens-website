@@ -10,3 +10,7 @@ build:
 
 run:
 	npx serve -s build
+
+release:
+	-rm -rf ./docs
+	cp -R ./build/* ./docs
