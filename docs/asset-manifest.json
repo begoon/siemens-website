@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/siemens-website/static/css/main.983a746b.chunk.css",
+    "main.js": "/siemens-website/static/js/main.ea2952cd.chunk.js",
+    "main.js.map": "/siemens-website/static/js/main.ea2952cd.chunk.js.map",
+    "runtime-main.js": "/siemens-website/static/js/runtime-main.ab7896df.js",
+    "runtime-main.js.map": "/siemens-website/static/js/runtime-main.ab7896df.js.map",
+    "static/css/2.e2d25f12.chunk.css": "/siemens-website/static/css/2.e2d25f12.chunk.css",
+    "static/js/2.4b60a09b.chunk.js": "/siemens-website/static/js/2.4b60a09b.chunk.js",
+    "static/js/2.4b60a09b.chunk.js.map": "/siemens-website/static/js/2.4b60a09b.chunk.js.map",
+    "static/js/3.179dc95a.chunk.js": "/siemens-website/static/js/3.179dc95a.chunk.js",
+    "static/js/3.179dc95a.chunk.js.map": "/siemens-website/static/js/3.179dc95a.chunk.js.map",
+    "index.html": "/siemens-website/index.html",
+    "static/css/2.e2d25f12.chunk.css.map": "/siemens-website/static/css/2.e2d25f12.chunk.css.map",
+    "static/css/main.983a746b.chunk.css.map": "/siemens-website/static/css/main.983a746b.chunk.css.map",
+    "static/js/2.4b60a09b.chunk.js.LICENSE.txt": "/siemens-website/static/js/2.4b60a09b.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.ab7896df.js",
+    "static/css/2.e2d25f12.chunk.css",
+    "static/js/2.4b60a09b.chunk.js",
+    "static/css/main.983a746b.chunk.css",
+    "static/js/main.ea2952cd.chunk.js"
+  ]
+}
