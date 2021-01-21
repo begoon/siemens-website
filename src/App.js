@@ -1,8 +1,8 @@
 import classes from './App.module.css';
 import { useState, useEffect } from 'react';
 import * as api from './services/Controllers';
-import Controller from './components/Controller';
-import NewController from './components/NewController'
+import Controller from './components/Controller/Controller';
+import NewController from './components/NewController/NewController'
 
 const App = () => {
   const [controllers, setControllers] = useState({});
