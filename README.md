@@ -1,5 +1,5 @@
-- npx create-react-app ui-experiments
-- cd ui-experiments
+- npx create-react-app siemens-website
+- cd siemens-website
 
 - npm init
 
