@@ -25,3 +25,7 @@ export const deleteController = (name, complete, always, failed) => {
 export const loadControllers = (complete, always, failed) => {
   request(host, `controller`, complete, always, failed);
 }
+
+export const readStatus = (complete, always, failed) => {
+  request(host, `status`, complete, always, failed);
+}

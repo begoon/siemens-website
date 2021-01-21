@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import * as api from './services/Controllers';
 import Controller from './components/Controller/Controller';
 import NewController from './components/NewController/NewController'
+import Status from './components/Status/Status'
 
 const App = () => {
   const [controllers, setControllers] = useState({});
@@ -58,6 +59,8 @@ const App = () => {
           )
         }
         <NewController create={createController} />
+        <hr />
+        <Status />
       </div>
     </>
   );
