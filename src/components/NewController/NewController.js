@@ -22,7 +22,7 @@ const NewController = (args) => {
   }
 
   const updateName = (event) => {
-    setName(event.target.value);
+    setName(event.target.value.replace(/\s/g, ''));
   }
 
   return (

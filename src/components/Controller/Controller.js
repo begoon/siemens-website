@@ -31,7 +31,9 @@ const Controller = (args) => {
 
   const updateNewVariable = (event, field) => {
     const updatedNewVariable = { ...newVariable };
-    updatedNewVariable[field] = event.target.value;
+    let value = event.target.value;
+    if (field === 'name') value = value.replace(/\s/g, '');
+    updatedNewVariable[field] = value;
     setNewVariable(updatedNewVariable);
   }
 
