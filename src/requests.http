@@ -6,8 +6,12 @@ GET {{host}}/controller
 
 ###
 
-GET {{host}}/controller/one/variable/set?z=x
+GET {{host}}/controller/one/variable/set?z=1x
 
 ###
 
-GET https://siemens-controller.herokuapp.com/controller/one/variable/delete?
+GET {{host}}/controller/one/variable/delete?x
+
+###
+
+GET {{host}}/controller/four/create
