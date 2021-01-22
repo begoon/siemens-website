@@ -16,3 +16,7 @@ release:
 	cp -R ./build ./docs
 
 publish: build release
+
+edit:
+	code -n .
+
