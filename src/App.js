@@ -4,6 +4,7 @@ import * as api from './services/Controllers';
 import Controller from './components/Controller/Controller';
 import NewController from './components/NewController/NewController'
 import Status from './components/Status/Status'
+import Spinner from './components/Spinner/Spinner';
 
 const App = () => {
   const [controllers, setControllers] = useState({});
@@ -43,8 +44,8 @@ const App = () => {
 
   return (
     <>
-      {error ? <p>{error}</p> : ''}
-      {loading ? <p>Loading...</p> : ''}
+      {loading ? <Spinner /> : null}
+      {error ? <p>{error}</p> : null}
       <button onClick={refresh}>Refresh</button>
       <a href="demo/" target="_blank" style={{ marginLeft: '10px' }}>
         Demo application
